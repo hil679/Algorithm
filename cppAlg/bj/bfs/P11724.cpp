@@ -13,19 +13,14 @@ int main() {
     for (int i = 0; i < e; i++) {
         int a, b;
         cin >> a >> b;
-        visited[a] = 1;
-        visited[b] = 1;
         graph[a].push_back(b);
         graph[b].push_back(a);
     }
-    for (int i = 1; i <= v; i++) {
-        visited[i] = 1;
-        graph[i].push_back(i);
-    }
+
     int ans = 0;
     for (int i = 1; i <= v; i++) {
-        if (visited[i] == 1) {
-            visited[i] = 0;
+        if (visited[i] == 0) {
+            visited[i] = 1;
             dfs(i);
             ans++;
         }
@@ -40,9 +35,9 @@ void dfs(int x) {
         int node = q.front();
         q.pop();
         for(int g : graph[node]) {
-            if (visited[g] == 1) {
+            if (visited[g] == 0) {
                 q.push(g);
-                visited[g] = 0;
+                visited[g] = 1;
             }
         }
     }
