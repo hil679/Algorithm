@@ -1,11 +1,11 @@
 #include <iostream>
-#include <queue>
+#include <vector>
 using namespace std;
 
 void dfs(int node);
 
-vector<int> graph[100000];
-int visited[100000] = {};
+vector<int> graph[100001];
+int visited[100001] = {};
 int res[100001];
 
 int main() {
@@ -19,10 +19,14 @@ int main() {
         graph[b].push_back(a);
     }
 
+    visited[1] = 1;
     dfs(1);
 
     for (int i = 2; i <= n; i++) {
-        cout << res[i] << endl;
+    //endl -> \n
+    //endl의 특징: 단순히 줄을 바꾸는 것뿐만 아니라, 출력 버퍼를 비우는 flush() 작업을 강제로 수행합니다.
+    //"\n"을 사용하면 버퍼가 꽉 찼을 때만 출력하므로 훨씬 빠릅니다.
+        cout << res[i] << "\n";
     }
 
     return 0;
@@ -34,7 +38,6 @@ void dfs(int node) {
             visited[g] = 1;
             res[g] = node;
             dfs(g);
-            visited[g] = 0;
         }
     }
 }
