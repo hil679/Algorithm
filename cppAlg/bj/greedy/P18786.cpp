@@ -16,17 +16,7 @@ using namespace std;
 bool compare(const pair<int, int>& a, const pair<int, int>& b) {
     int diffA = abs(a.first - a.second);
     int diffB = abs(b.first - b.second);
-
-    // 1. 차이가 다르면 차이가 큰 순서대로 (내림차순)
-    if (diffA != diffB) {
-        return diffA > diffB;
-    }
-
-    // 2. 차이가 같다면, 각 쌍에서 더 큰 값을 찾아 비교 (내림차순)
-    int maxA = max(a.first, a.second);
-    int maxB = max(b.first, b.second);
-
-    return maxA > maxB;
+    return diffA > diffB;
 }
 
 int main() {
@@ -64,38 +54,43 @@ int main() {
         5 1
         13 30 2 13 3
         6 19 25 30 10
-        이 반례 때문에 불가능
+        이전 코드 -> 이 반례 때문에 불가능
         답 108 -> 나 101
         일단 max로 더하고, 인원차 초과하면 손해 작은 것부터 뒤집기로 변경 필요
         */
+        vector<int> pickedA(100000);
+        vector<int> pickedB(100000);
         for (int j = 0; j < n; j++) {
-            int diff = aNum - bNum;
-            if ((-k < diff && diff < k) || ((diff == -k || diff == k) && j != n-1)) {
-                int attack = pairs[j].first;
-                int defense = pairs[j].second;
-                if (attack > defense) {
-                    aNum++;
-                    ans += attack;
-                }
-                else if (attack < defense) {
-                    bNum++;
-                    ans += defense;
-                }
-                else ans += attack;
-            } else {
-                int attack = pairs[n-1].first;
-                int defense = pairs[n-1].second;
-                if (diff <= -k) {
-                    ans += attack;
-                    aNum++;
-                } else {
-                    ans += defense;
-                    bNum++;
-                }
-                n--;
-                j--;
+            int attack = pairs[j].first;
+            int defense = pairs[j].second;
+            if (attack > defense) {
+                aNum++;
+                ans += attack;
+                pickedA[j] = 1;
             }
+            else if (attack < defense) {
+                bNum++;
+                ans += defense;
+                pickedB[j] = 1;
+            }
+            else ans += attack;
             //cout << ans << " " << j << " " << n << endl;
+        }
+        int diff = abs(aNum - bNum);
+        int idx = aNum + bNum - 1;
+        for (int d = diff; d > k;) {
+            if (aNum > bNum && pickedA[idx] == 1) {
+                ans -= pairs[idx].first;
+                ans += pairs[idx].second;
+                d -= 2;
+            }
+            else if (aNum < bNum && pickedB[idx] == 1) {
+                ans += pairs[idx].first;
+                ans -= pairs[idx].second;
+                d -= 2;
+            }
+
+            idx--;
         }
         cout << ans << "\n";
     }
